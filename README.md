@@ -1,2 +1,3 @@
-# xlxtractor
-Excel Extractor :)
+## Excel Extractor
+
+![image](public/cover.png)
