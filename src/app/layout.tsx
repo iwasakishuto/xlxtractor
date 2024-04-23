@@ -37,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SnackbarContextProvider children={children} />
+        <SnackbarContextProvider>{children}</SnackbarContextProvider>
       </body>
     </html>
   );
