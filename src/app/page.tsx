@@ -137,7 +137,7 @@ const Page: NextPage<PageProps> = () => {
           <Typography variant="h6" noWrap component="div">
             Excel Extractor
           </Typography>
-          <Avatar className="ml-auto mr-2" alt="Icon" src="/favicon.jpg" />
+          <Avatar className="ml-auto mr-2" alt="Icon" src="https://iwasakishuto.github.io/xlxtractor/favicon.png" />
         </Toolbar>
       </AppBar>
       {/* --- END Header ---> */}
