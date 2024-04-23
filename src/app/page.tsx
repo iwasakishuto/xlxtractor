@@ -12,6 +12,7 @@ import AppBar from "@/components/Mui/AppBar";
 import SettingCard from "@/components/SettingCard";
 import DrawerHeader from "@/components/Styled/DrawerHeader";
 import Main from "@/components/Styled/Main";
+import { drawerWidth, headerHeight } from "@/data/const";
 import { AcceptedExcelFileTypes } from "@/data/excel";
 import { DEFAULT_KPIS } from "@/data/kpi";
 import { cell2value } from "@/lib/xl_utils";
@@ -28,12 +29,9 @@ import Typography from "@mui/material/Typography";
 import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 
-type PageProps = {
-  drawerWidth?: number;
-  header_height?: number;
-};
+type PageProps = {};
 
-const Page: NextPage<PageProps> = ({ drawerWidth = 400, header_height = 64 }) => {
+const Page: NextPage<PageProps> = () => {
   // onchange states
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   // Excel states
@@ -129,7 +127,7 @@ const Page: NextPage<PageProps> = ({ drawerWidth = 400, header_height = 64 }) =>
         open={isDrawerOpen}
         drawerWidth={drawerWidth}
         style={{
-          height: `${header_height}px`,
+          height: `${headerHeight}px`,
         }}
       >
         <Toolbar>
@@ -191,7 +189,7 @@ const Page: NextPage<PageProps> = ({ drawerWidth = 400, header_height = 64 }) =>
         <div
           className="w-full flex"
           style={{
-            height: `calc(100% - ${header_height}px)`,
+            height: `calc(100% - ${headerHeight}px)`,
           }}
         >
           {/* <--- Excel Content --- */}
