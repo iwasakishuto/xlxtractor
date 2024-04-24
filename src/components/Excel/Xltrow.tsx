@@ -5,7 +5,7 @@
 
 import React from "react";
 
-import { cell2value, getVisColSpan } from "@/lib/xl_utils";
+import { get_cell_info } from "@/lib/xl_utils";
 import type { HTMLTableRowProps } from "@/types";
 import * as wjcXlsx from "@mescius/wijmo.xlsx";
 
@@ -40,29 +40,14 @@ const Xltrow: React.FC<XltrowProps> = ({
 
   let cellsCnt: number = 0;
   for (let c = 0; wbrow.cells && c < wbrow.cells.length; c++) {
-    let cell = wbrow.cells[c],
-      col = columns[c];
-    if (col === undefined || col.visible) {
-      let value: string = "";
-      let colSpan: number = 1;
-      let rowSpan: number = 1;
-      cellsCnt++;
-      if (cell) {
-        value = cell2value(cell);
-        if (cell.colSpan && cell.colSpan > 1) {
-          colSpan = getVisColSpan({ columns: columns, startFrom: c, colSpan: cell.colSpan });
-          cellsCnt += colSpan - 1;
-          // c += cell.colSpan - 1;
-        }
-        if (cell.rowSpan) {
-          rowSpan = cell.rowSpan;
-        }
-      }
+    let cell_info = get_cell_info({ wbrow: wbrow, columns: columns, idx: c });
+    if (cell_info.value !== null) {
       tdProps.push({
-        colSpan: colSpan,
-        rowSpan: rowSpan,
-        value: value,
+        colSpan: cell_info.colSpan,
+        rowSpan: cell_info.rowSpan,
+        value: cell_info.value,
       });
+      cellsCnt += cell_info.num_cell;
     }
   }
   let padCellsCount = maxRows - cellsCnt - invisColCnt;

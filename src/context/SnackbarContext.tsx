@@ -9,7 +9,6 @@
 "use client";
 
 import Alert from "@mui/material/Alert";
-import Slide from "@mui/material/Slide";
 import Snackbar from "@mui/material/Snackbar";
 import React, { createContext, useState } from "react";
 
@@ -95,9 +94,7 @@ export const SnackbarContextProvider: React.FC<SnackbarContextProviderProps> = (
 
   return (
     <React.Fragment>
-      {/* 子コンポーネントの描画 */}
       <SnackbarContext.Provider value={{ showAlertSnack: showAlertSnack }}>{children}</SnackbarContext.Provider>
-      {/* Snackbarの描画 */}
       <Snackbar
         open={snackBarProps.isOpen}
         autoHideDuration={snackBarProps.autoHideDuration}
@@ -105,7 +102,6 @@ export const SnackbarContextProvider: React.FC<SnackbarContextProviderProps> = (
           vertical: snackBarProps.vertical,
           horizontal: snackBarProps.horizontal,
         }}
-        TransitionComponent={(props) => <Slide {...props} direction="right" />}
         onClose={handleCloseSnack}
         className={snackBarProps.isOpen ? "" : "hidden"}
       >

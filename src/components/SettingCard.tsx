@@ -27,26 +27,28 @@ import React, { useContext } from "react";
 
 type SettingCardProps = {
   sheet: wjcXlsx.WorkSheet | null;
+  excelFilename: string;
+  setExcelFilename: React.Dispatch<React.SetStateAction<string>>;
   kpiColIdx: number;
-  dateRowIdx: number;
-  kpis: KpiInfo[];
   setKpiColIdx: React.Dispatch<React.SetStateAction<number>>;
+  dateRowIdx: number;
   setDateRowIdx: React.Dispatch<React.SetStateAction<number>>;
+  kpis: KpiInfo[];
   setKpis: React.Dispatch<React.SetStateAction<KpiInfo[]>>;
   kpiOptions: KpiInfo[];
-  excelFilename?: string;
 } & Omit<CardProps, "children">;
 
 const SettingCard: React.FC<SettingCardProps> = ({
   sheet,
+  excelFilename,
+  setExcelFilename,
   kpiColIdx,
-  dateRowIdx,
-  kpis,
   setKpiColIdx,
+  dateRowIdx,
   setDateRowIdx,
+  kpis,
   setKpis,
   kpiOptions,
-  excelFilename = "KPIs.xlsx",
   className = "",
   ...props
 }) => {
@@ -57,6 +59,21 @@ const SettingCard: React.FC<SettingCardProps> = ({
       <CardHeader action={<SettingsIcon className="mr-1" />} title="設定" className="border-b-2 border-slate-400 pb-1" />
       <CardContent>
         <Grid container spacing={1} className="mt-4">
+          {excelFilename.length > 0 && (
+            <Grid container xs={12} className="mb-6 items-center">
+              <span className="ml-auto">Excel：</span>
+              <code className="mr-auto">{excelFilename}</code>
+              {/* <Input
+              id="excel-filenmae"
+              value={excelFilename}
+              onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
+                setExcelFilename(evt.target.value);
+              }}
+              className="mr-auto"
+              disabled={sheet === null}
+            ></Input> */}
+            </Grid>
+          )}
           <Grid xs={12} sm={6} container className="items-center">
             <label className="ml-auto mr-1" id="kpi">
               KPI列：
@@ -70,6 +87,7 @@ const SettingCard: React.FC<SettingCardProps> = ({
                 }
               }}
               className="w-16 mr-auto"
+              disabled={sheet === null}
             />
           </Grid>
           <Grid xs={12} sm={6} container className="items-center">
@@ -85,6 +103,7 @@ const SettingCard: React.FC<SettingCardProps> = ({
                 }
               }}
               className="w-16 mr-auto"
+              disabled={sheet === null}
             />
           </Grid>
           <Grid item xs={12} className="mt-6">
@@ -109,6 +128,7 @@ const SettingCard: React.FC<SettingCardProps> = ({
                 console.log(["newValue", newValue]);
               }}
               ChipProps={{ className: "bg-orange-200" }}
+              disabled={sheet === null}
             />
           </Grid>
           <Grid item xs={12} className="mt-8">

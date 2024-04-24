@@ -135,3 +135,41 @@ export function collectKPIdata({ sheet, kpis, kpiColIdx, dateRowIdx }: { sheet: 
   }
   return data;
 }
+
+/**
+ * @description Get the cell value.
+ * @param wbrow {wjcXlsx.WorkbookRow} The row to be checked.
+ * @param columns {wjcXlsx.WorkbookColumn[]} The columns to be checked.
+ * @param idx {number} The index of the row.
+ * @returns
+ */
+export function get_cell_info({ wbrow, columns, idx }: { wbrow: wjcXlsx.WorkbookRow; columns: wjcXlsx.WorkbookColumn[]; idx: number }) {
+  let num_cell: number = 0,
+    value: string | null = null,
+    colSpan: number = 1,
+    rowSpan: number = 1,
+    cell: wjcXlsx.WorkbookCell = wbrow.cells[idx],
+    col: wjcXlsx.WorkbookColumn = columns[idx];
+  if (col === undefined || col.visible) {
+    num_cell++;
+    if (cell) {
+      value = cell2value(cell);
+      if (cell.colSpan && cell.colSpan > 1) {
+        colSpan = getVisColSpan({ columns: columns, startFrom: idx, colSpan: cell.colSpan });
+        num_cell += colSpan - 1;
+        // c += cell.colSpan - 1;
+      }
+      if (cell.rowSpan) {
+        rowSpan = cell.rowSpan;
+      }
+    } else {
+      value = ""; // Not null
+    }
+  }
+  return {
+    value: value,
+    rowSpan: rowSpan,
+    colSpan: colSpan,
+    num_cell: num_cell,
+  };
+}

@@ -15,7 +15,7 @@ import Main from "@/components/Styled/Main";
 import { drawerWidth, headerHeight } from "@/data/const";
 import { AcceptedExcelFileTypes } from "@/data/excel";
 import { DEFAULT_KPIS } from "@/data/kpi";
-import { cell2value } from "@/lib/xl_utils";
+import { get_cell_info } from "@/lib/xl_utils";
 import type { KpiInfo } from "@/types";
 import * as wjcXlsx from "@mescius/wijmo.xlsx";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -62,19 +62,27 @@ const Page: NextPage<PageProps> = () => {
       // TODO: colspan > 1
       let kpiOptions_: KpiInfo[] = [];
       let selectedKpis_: KpiInfo[] = [];
-      const columns = workbook.sheets[sheetIndex].columns;
+      const columns = workbook.sheets[sheetIndex].columns || [];
 
       workbook.sheets[sheetIndex].rows
-        .filter((row: wjcXlsx.WorkbookRow) => row === undefined || row.visible)
+        .filter((row: wjcXlsx.WorkbookRow) => row == undefined || row.visible)
         .forEach((row: wjcXlsx.WorkbookRow, i: number) => {
-          let cells = row.cells.filter((_, c) => columns[c] === undefined || columns[c].visible);
-          if (cells[kpiColIdx] && cells[kpiColIdx].value) {
-            let value = cell2value(cells[kpiColIdx]);
-            if (!kpiOptions_.map((e) => e.label).includes(value)) {
-              if (DEFAULT_KPIS.some((kpi: string) => value.includes(kpi))) {
-                selectedKpis_ = [...selectedKpis_, { label: value, row: i }];
+          for (let c = 0; row.cells && c < row.cells.length; c++) {
+            if (c === kpiColIdx) {
+              let { value } = get_cell_info({
+                wbrow: row,
+                columns: columns,
+                idx: c,
+              });
+              if (value !== null) {
+                if (!kpiOptions_.map((e) => e.label).includes(value)) {
+                  if (DEFAULT_KPIS.some((kpi: string) => value.includes(kpi))) {
+                    selectedKpis_ = [...selectedKpis_, { label: value, row: i }];
+                  }
+                  kpiOptions_ = [...kpiOptions_, { label: value, row: i }];
+                }
               }
-              kpiOptions_ = [...kpiOptions_, { label: value, row: i }];
+              break;
             }
           }
         });
@@ -178,6 +186,7 @@ const Page: NextPage<PageProps> = () => {
             setKpis={setKpis}
             kpiOptions={kpiOptions}
             excelFilename={excelFilename}
+            setExcelFilename={setExcelFilename}
           />
         </div>
       </Drawer>
@@ -236,6 +245,7 @@ const Page: NextPage<PageProps> = () => {
                 kpiOptions={kpiOptions}
                 className="max-h-full"
                 excelFilename={excelFilename}
+                setExcelFilename={setExcelFilename}
               />
             )}
           </div>
