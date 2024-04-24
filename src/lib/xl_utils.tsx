@@ -84,6 +84,8 @@ export function cell2value(cell: wjcXlsx.WorkbookCell): string {
     }
     let fmtValue = netFormat !== undefined && netFormat.length > 0 ? wjcCore.Globalize.format(value, netFormat) : value;
     value = wjcCore.escapeHtml(fmtValue);
+  } else if (value === null) {
+    value = "";
   }
   return value;
 }

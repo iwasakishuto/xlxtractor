@@ -44,6 +44,7 @@ const Page: NextPage<PageProps> = () => {
   const [kpiOptions, setKpiOptions] = useState<KpiInfo[]>([]);
   const [kpiColIdx, setKpiColIdx] = useState<number>(0);
   const [dateRowIdx, setDateRowIdx] = useState<number>(0);
+  const [maxRows, setMaxRows] = useState<number>(200);
 
   useEffect(() => {
     if (workbook !== null) {
@@ -66,6 +67,7 @@ const Page: NextPage<PageProps> = () => {
 
       workbook.sheets[sheetIndex].rows
         .filter((row: wjcXlsx.WorkbookRow) => row == undefined || row.visible)
+        .slice(0, maxRows)
         .forEach((row: wjcXlsx.WorkbookRow, i: number) => {
           for (let c = 0; row.cells && c < row.cells.length; c++) {
             if (c === kpiColIdx) {
@@ -89,7 +91,7 @@ const Page: NextPage<PageProps> = () => {
       setKpis(selectedKpis_);
       setKpiOptions(kpiOptions_);
     }
-  }, [kpiColIdx]);
+  }, [kpiColIdx, maxRows, sheetIndex]);
 
   /**
    * Excel File Upload Handler
@@ -221,7 +223,7 @@ const Page: NextPage<PageProps> = () => {
                 ) : (
                   <div className="w-full h-full px-6 py-2">
                     <XlSheetNames workbook={workbook} sheetIndex={sheetIndex} setSheetIndex={setSheetIndex} />
-                    <XlBook worksheet={workbook?.sheets[sheetIndex]} dateRowIdx={dateRowIdx} kpiColIdx={kpiColIdx} kpis={kpis} />
+                    <XlBook worksheet={workbook?.sheets[sheetIndex]} dateRowIdx={dateRowIdx} kpiColIdx={kpiColIdx} kpis={kpis} maxRows={maxRows} />
                   </div>
                 )}
               </div>
