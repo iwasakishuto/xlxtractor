@@ -76,7 +76,7 @@ const Page: NextPage<PageProps> = () => {
               });
               if (value !== null) {
                 if (!kpiOptions_.map((e) => e.label).includes(value)) {
-                  if (DEFAULT_KPIS.some((kpi: string) => value.includes(kpi))) {
+                  if (DEFAULT_KPIS.some((kpi: string) => value !== null && value.includes(kpi))) {
                     selectedKpis_ = [...selectedKpis_, { label: value, row: i }];
                   }
                   kpiOptions_ = [...kpiOptions_, { label: value, row: i }];
