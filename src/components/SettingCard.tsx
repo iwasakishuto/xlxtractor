@@ -25,6 +25,30 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import React, { useContext } from "react";
 
+const InputGrid = ({ label, num, setNum, disabled }: { label: string; num: number; setNum: React.Dispatch<React.SetStateAction<number>>; disabled: boolean }) => (
+  <Grid key={label} xs={12} sm={6} container className="items-center">
+    <label className="ml-auto mr-1" id="dispColumns">
+      {label}：
+    </label>
+    <NumberInput
+      id="dispColumns"
+      value={num}
+      onChange={(evt) => {
+        if (evt.target instanceof HTMLInputElement) {
+          setNum(Number(evt.target.value));
+        }
+      }}
+      onInputChange={(evt) => {
+        if (evt.target instanceof HTMLInputElement) {
+          setNum(Number(evt.target.value));
+        }
+      }}
+      className="w-16 mr-auto"
+      disabled={disabled}
+    />
+  </Grid>
+);
+
 type SettingCardProps = {
   sheet: wjcXlsx.WorkSheet | null;
   excelFilename: string;
@@ -36,6 +60,12 @@ type SettingCardProps = {
   kpis: KpiInfo[];
   setKpis: React.Dispatch<React.SetStateAction<KpiInfo[]>>;
   kpiOptions: KpiInfo[];
+  dispColumns: number;
+  setDispColumns: React.Dispatch<React.SetStateAction<number>>;
+  dispRows: number;
+  setDispRows: React.Dispatch<React.SetStateAction<number>>;
+  maxColumns: number;
+  maxRows: number;
 } & Omit<CardProps, "children">;
 
 const SettingCard: React.FC<SettingCardProps> = ({
@@ -49,6 +79,12 @@ const SettingCard: React.FC<SettingCardProps> = ({
   kpis,
   setKpis,
   kpiOptions,
+  dispColumns,
+  setDispColumns,
+  dispRows,
+  setDispRows,
+  maxColumns,
+  maxRows,
   className = "",
   ...props
 }) => {
@@ -60,53 +96,32 @@ const SettingCard: React.FC<SettingCardProps> = ({
       <CardContent>
         <Grid container spacing={1} className="mt-4">
           {excelFilename.length > 0 && (
-            <Grid container xs={12} className="mb-6 items-center">
-              <span className="ml-auto">Excel：</span>
-              <code className="mr-auto">{excelFilename}</code>
-              {/* <Input
-              id="excel-filenmae"
-              value={excelFilename}
-              onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
-                setExcelFilename(evt.target.value);
-              }}
-              className="mr-auto"
-              disabled={sheet === null}
-            ></Input> */}
+            <Grid container>
+              <Grid container xs={12} className="mb-4 items-center w-full">
+                <span className="ml-auto">Excel：</span>
+                <code className="mr-auto">{excelFilename}</code>
+              </Grid>
+              <Grid container xs={12} className="mb-4 w-full">
+                <Grid item xs={12} sm={6} className="items-center flex">
+                  <span className="ml-auto">最大列数：</span>
+                  <code className="mr-auto">{maxColumns}</code>
+                </Grid>
+                <Grid item xs={12} sm={6} className="items-center flex">
+                  <span className="ml-auto">最大行数：</span>
+                  <code className="mr-auto">{maxRows}</code>
+                </Grid>
+              </Grid>
             </Grid>
           )}
-          <Grid xs={12} sm={6} container className="items-center">
-            <label className="ml-auto mr-1" id="kpi">
-              KPI列：
-            </label>
-            <NumberInput
-              id="kpi"
-              value={kpiColIdx}
-              onChange={(evt) => {
-                if (evt.target instanceof HTMLInputElement) {
-                  setKpiColIdx(Number(evt.target.value));
-                }
-              }}
-              className="w-16 mr-auto"
-              disabled={sheet === null}
-            />
+          <Grid container className="mb-6 items-center">
+            <InputGrid label="列数" num={dispColumns} setNum={setDispColumns} disabled={sheet === null} />
+            <InputGrid label="行数" num={dispRows} setNum={setDispRows} disabled={sheet === null} />
           </Grid>
-          <Grid xs={12} sm={6} container className="items-center">
-            <label className="ml-auto mr-1" htmlFor="date">
-              日付行：
-            </label>
-            <NumberInput
-              id="date"
-              value={dateRowIdx}
-              onChange={(evt) => {
-                if (evt.target instanceof HTMLInputElement) {
-                  setDateRowIdx(Number(evt.target.value));
-                }
-              }}
-              className="w-16 mr-auto"
-              disabled={sheet === null}
-            />
+          <Grid container className="mb-6 items-center">
+            <InputGrid label="KPI列" num={kpiColIdx} setNum={setKpiColIdx} disabled={sheet === null} />
+            <InputGrid label="日付行" num={dateRowIdx} setNum={setDateRowIdx} disabled={sheet === null} />
           </Grid>
-          <Grid item xs={12} className="mt-6">
+          <Grid item xs={12}>
             <Autocomplete
               multiple
               disableCloseOnSelect

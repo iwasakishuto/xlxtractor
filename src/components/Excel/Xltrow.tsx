@@ -42,6 +42,7 @@ const Xltrow: React.FC<XltrowProps> = ({
 
   let cellsCnt: number = 0;
   for (let c = 0; wbrow.cells && c < wbrow.cells.length; c++) {
+    if (c >= maxRows) break;
     let cell_info = get_cell_info({ wbrow: wbrow, columns: columns, idx: c });
     if (cell_info.value !== null) {
       tdProps.push({

@@ -16,7 +16,7 @@ import Main from "@/components/Styled/Main";
 import { drawerWidth, headerHeight, site_url } from "@/data/const";
 import { AcceptedExcelFileTypes } from "@/data/excel";
 import { DEFAULT_KPIS } from "@/data/kpi";
-import { get_cell_info } from "@/lib/xl_utils";
+import { get_cell_info, isColValid, isRowValid } from "@/lib/xl_utils";
 import type { KpiInfo } from "@/types";
 import * as wjcXlsx from "@mescius/wijmo.xlsx";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -41,12 +41,15 @@ const Page: NextPage<PageProps> = () => {
   const [sheetIndex, setSheetIndex] = useState<number>(0);
   const [excelUploading, setExcelUploading] = useState<boolean>(false);
   const [excelFilename, setExcelFilename] = useState<string>("");
+  const [maxRows, setMaxRows] = useState<number>(0);
+  const [maxColumns, setMaxColumns] = useState<number>(0);
   // KPI states
   const [kpis, setKpis] = useState<KpiInfo[]>([]);
   const [kpiOptions, setKpiOptions] = useState<KpiInfo[]>([]);
   const [kpiColIdx, setKpiColIdx] = useState<number>(0);
   const [dateRowIdx, setDateRowIdx] = useState<number>(0);
-  const [maxRows, setMaxRows] = useState<number>(200);
+  const [dispRows, setDispRows] = useState<number>(200);
+  const [dispColumns, setDispColumns] = useState<number>(100);
 
   useEffect(() => {
     if (workbook !== null) {
@@ -56,6 +59,11 @@ const Page: NextPage<PageProps> = () => {
       setKpiOptions([]);
       setKpiColIdx(0);
       setDateRowIdx(0);
+      const ws: wjcXlsx.WorkSheet = workbook.sheets[sheetIndex];
+      if (ws) {
+        setMaxRows(ws.rows.filter((row) => isRowValid(row)).length);
+        setMaxColumns(ws.columns.filter((col) => isColValid(col)).length);
+      }
     }
   }, [sheetIndex]);
 
@@ -69,7 +77,7 @@ const Page: NextPage<PageProps> = () => {
 
       workbook.sheets[sheetIndex].rows
         .filter((row: wjcXlsx.WorkbookRow) => row == undefined || row.visible)
-        .slice(0, maxRows)
+        .slice(0, dispRows)
         .forEach((row: wjcXlsx.WorkbookRow, i: number) => {
           for (let c = 0; row.cells && c < row.cells.length; c++) {
             let { value, idx } = get_cell_info({
@@ -94,7 +102,7 @@ const Page: NextPage<PageProps> = () => {
       setKpis(selectedKpis_);
       setKpiOptions(kpiOptions_);
     }
-  }, [kpiColIdx, maxRows, sheetIndex]);
+  }, [kpiColIdx, dispRows, sheetIndex]);
 
   /**
    * Excel File Upload Handler
@@ -192,6 +200,12 @@ const Page: NextPage<PageProps> = () => {
             kpiOptions={kpiOptions}
             excelFilename={excelFilename}
             setExcelFilename={setExcelFilename}
+            dispColumns={dispColumns}
+            setDispColumns={setDispColumns}
+            dispRows={dispRows}
+            setDispRows={setDispRows}
+            maxColumns={maxColumns}
+            maxRows={maxRows}
           />
           <SampleExcelCard className="mt-12" />
         </div>
@@ -227,7 +241,7 @@ const Page: NextPage<PageProps> = () => {
                 ) : (
                   <div className="w-full h-full px-6 py-2">
                     <XlSheetNames workbook={workbook} sheetIndex={sheetIndex} setSheetIndex={setSheetIndex} />
-                    <XlBook worksheet={workbook?.sheets[sheetIndex]} dateRowIdx={dateRowIdx} kpiColIdx={kpiColIdx} kpis={kpis} maxRows={maxRows} />
+                    <XlBook worksheet={workbook?.sheets[sheetIndex]} dateRowIdx={dateRowIdx} kpiColIdx={kpiColIdx} kpis={kpis} maxRows={dispRows} maxColumns={dispColumns} />
                   </div>
                 )}
               </div>
@@ -252,6 +266,12 @@ const Page: NextPage<PageProps> = () => {
                 className="max-h-full"
                 excelFilename={excelFilename}
                 setExcelFilename={setExcelFilename}
+                dispColumns={dispColumns}
+                setDispColumns={setDispColumns}
+                dispRows={dispRows}
+                setDispRows={setDispRows}
+                maxColumns={maxColumns}
+                maxRows={maxRows}
               />
             )}
           </div>

@@ -48,6 +48,14 @@ export function importXlStyle(cssStyle: CSSStyleDeclaration, xlsxStyle: wjcXlsx.
   }
 }
 
+export function isColValid(col: wjcXlsx.WorkbookColumn): boolean {
+  return col === undefined || col.visible;
+}
+
+export function isRowValid(row: wjcXlsx.WorkbookRow): boolean {
+  return row === undefined || row.visible;
+}
+
 /**
  * Get the visible column span.
  * @param columns The columns to be checked.
@@ -59,9 +67,12 @@ export function getVisColSpan({ columns, startFrom, colSpan }: { columns: wjcXls
   let res = colSpan;
   for (let i = startFrom; i < columns.length && i < startFrom + colSpan; i++) {
     let col = columns[i];
-    if (col && !col.visible) {
+    if (!isColValid(col)) {
       res--;
     }
+    // if (col && !col.visible) {
+    //   res--;
+    // }
   }
   return res;
 }
@@ -126,7 +137,7 @@ export function collectKPIdata({ sheet, kpis, kpiColIdx, dateRowIdx }: { sheet: 
 
   if (sheet.rows) {
     sheet.rows
-      .filter((row: wjcXlsx.WorkbookRow) => row === undefined || row.visible)
+      .filter((row: wjcXlsx.WorkbookRow) => isRowValid(row))
       .forEach((row: wjcXlsx.WorkbookRow, i: number) => {
         if (i === dateRowIdx) {
           let [_, values] = getKpiKeyValues(row, kpiColIdx);

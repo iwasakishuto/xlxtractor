@@ -41,8 +41,8 @@ const XlBook: React.FC<XlBookProps> = ({ worksheet, kpis, dateRowIdx = 0, kpiCol
       <table className={`border-collapse table-fixd w-full shadow-md rounded-xl bg-white text-slate-800 ${className}`} {...props}>
         <colgroup>
           {columns
-            .slice(0, maxRowCells)
             .filter((col) => col.visible)
+            .slice(0, maxRowCells)
             .map((col, i: number) => (
               <col key={i} width={col.autoWidth ? "" : col.width != null ? `${col.width}px` : "60px"}></col>
             ))}
