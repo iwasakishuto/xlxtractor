@@ -99,20 +99,23 @@ export function collectKPIdata({ sheet, kpis, kpiColIdx, dateRowIdx }: { sheet: 
    * @param kpiColIdx {number}
    * @returns {[string, string[]]} The key and values of the KPI.
    */
-  function getKpiKeyValues(row: wjcXlsx.WorkbookRow, kpiColIdx: number): [string, string[]] {
+  function getKpiKeyValues(row: wjcXlsx.WorkbookRow, kpiColIdx: number): [string, (string | null)[]] {
     let key: string = "";
-    let values: string[] = [];
-    row.cells.forEach((cell, c) => {
-      let col = columns[c];
-      if (col === undefined || col.visible) {
-        if (c === kpiColIdx) {
-          key = cell2value(cell);
-        }
-        if (c > kpiColIdx) {
-          values.push(cell2value(cell));
-        }
+    let values: (string | null)[] = [];
+
+    for (let c = 0; row.cells && c < row.cells.length; c++) {
+      let { value, idx, num_cell } = get_cell_info({ wbrow: row, columns: columns, idx: c });
+      if (c <= kpiColIdx && kpiColIdx <= idx) {
+        key = value || "";
       }
-    });
+      if (c > kpiColIdx) {
+        values.push(value);
+      }
+      for (let i = 0; i < num_cell - 1; i++) {
+        values.push(null);
+      }
+      c = idx;
+    }
     return [key, values];
   }
   const data: JsonData = {
