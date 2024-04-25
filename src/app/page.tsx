@@ -9,10 +9,11 @@ import DroppableInput from "@/components/DroppableInput";
 import XlBook from "@/components/Excel/XlBook";
 import XlSheetNames from "@/components/Excel/XlSheetNames";
 import AppBar from "@/components/Mui/AppBar";
+import SampleExcelCard from "@/components/SampleExcelCard";
 import SettingCard from "@/components/SettingCard";
 import DrawerHeader from "@/components/Styled/DrawerHeader";
 import Main from "@/components/Styled/Main";
-import { drawerWidth, headerHeight } from "@/data/const";
+import { drawerWidth, headerHeight, site_url } from "@/data/const";
 import { AcceptedExcelFileTypes } from "@/data/excel";
 import { DEFAULT_KPIS } from "@/data/kpi";
 import { get_cell_info } from "@/lib/xl_utils";
@@ -28,6 +29,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
+import urlJoin from "url-join";
 
 type PageProps = {};
 
@@ -147,7 +149,7 @@ const Page: NextPage<PageProps> = () => {
           <Typography variant="h6" noWrap component="div">
             Excel Extractor
           </Typography>
-          <Avatar className="ml-auto mr-2" alt="Icon" src="https://iwasakishuto.github.io/xlxtractor/favicon.png" />
+          <Avatar className="ml-auto mr-2" alt="Icon" src={urlJoin(site_url, "favicon.png")} />
         </Toolbar>
       </AppBar>
       {/* --- END Header ---> */}
@@ -190,6 +192,7 @@ const Page: NextPage<PageProps> = () => {
             excelFilename={excelFilename}
             setExcelFilename={setExcelFilename}
           />
+          <SampleExcelCard className="mt-12" />
         </div>
       </Drawer>
       {/* --- END Sidebar ---> */}
