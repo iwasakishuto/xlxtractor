@@ -72,12 +72,12 @@ const Page: NextPage<PageProps> = () => {
         .slice(0, maxRows)
         .forEach((row: wjcXlsx.WorkbookRow, i: number) => {
           for (let c = 0; row.cells && c < row.cells.length; c++) {
-            if (c === kpiColIdx) {
-              let { value } = get_cell_info({
-                wbrow: row,
-                columns: columns,
-                idx: c,
-              });
+            let { value, idx } = get_cell_info({
+              wbrow: row,
+              columns: columns,
+              idx: c,
+            });
+            if (c <= kpiColIdx && kpiColIdx <= idx) {
               if (value !== null) {
                 if (!kpiOptions_.map((e) => e.label).includes(value)) {
                   if (DEFAULT_KPIS.some((kpi: string) => value !== null && value.includes(kpi))) {
@@ -88,6 +88,7 @@ const Page: NextPage<PageProps> = () => {
               }
               break;
             }
+            c = idx;
           }
         });
       setKpis(selectedKpis_);

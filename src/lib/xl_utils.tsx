@@ -159,7 +159,7 @@ export function get_cell_info({ wbrow, columns, idx }: { wbrow: wjcXlsx.Workbook
       if (cell.colSpan && cell.colSpan > 1) {
         colSpan = getVisColSpan({ columns: columns, startFrom: idx, colSpan: cell.colSpan });
         num_cell += colSpan - 1;
-        // c += cell.colSpan - 1;
+        idx += cell.colSpan - 1;
       }
       if (cell.rowSpan) {
         rowSpan = cell.rowSpan;
@@ -173,5 +173,6 @@ export function get_cell_info({ wbrow, columns, idx }: { wbrow: wjcXlsx.Workbook
     rowSpan: rowSpan,
     colSpan: colSpan,
     num_cell: num_cell,
+    idx: idx,
   };
 }
