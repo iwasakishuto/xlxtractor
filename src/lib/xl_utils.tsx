@@ -133,6 +133,8 @@ export function collectKPIdata({ sheet, kpis, kpiColIdx, dateRowIdx }: { sheet: 
     Date: [],
     KPIs: {},
     excelFilename: "",
+    sheetName: "",
+    company: "",
   };
 
   if (sheet.rows) {
@@ -178,7 +180,7 @@ export function get_cell_info({ wbrow, columns, idx }: { wbrow: wjcXlsx.Workbook
       if (cell.rowSpan) {
         rowSpan = cell.rowSpan;
       }
-    } else {
+    } else if (cell === undefined) {
       value = ""; // Not null
     }
   }

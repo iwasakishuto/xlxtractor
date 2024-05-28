@@ -5,24 +5,21 @@
 
 "use client";
 
+import AutocompleteCompany from "@/components/Mui/AutocompleteCompany";
+import AutocompleteKpis from "@/components/Mui/AutocompleteKpis";
 import NumberInput from "@/components/Mui/NumberInput";
 import { SnackbarContext } from "@/context/SnackbarContext";
 import { downloadJson } from "@/lib/utils";
 import { collectKPIdata } from "@/lib/xl_utils";
 import type { KpiInfo } from "@/types";
 import * as wjcXlsx from "@mescius/wijmo.xlsx";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import DownloadIcon from "@mui/icons-material/Download";
 import SettingsIcon from "@mui/icons-material/Settings";
-import Autocomplete from "@mui/material/Autocomplete";
 import Button from "@mui/material/Button";
 import Card, { CardProps } from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
-import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
 import React, { useContext } from "react";
 
 const InputGrid = ({ label, num, setNum, disabled }: { label: string; num: number; setNum: React.Dispatch<React.SetStateAction<number>>; disabled: boolean }) => (
@@ -53,6 +50,8 @@ type SettingCardProps = {
   sheet: wjcXlsx.WorkSheet | null;
   excelFilename: string;
   setExcelFilename: React.Dispatch<React.SetStateAction<string>>;
+  company: string;
+  setCompany: React.Dispatch<React.SetStateAction<string>>;
   kpiColIdx: number;
   setKpiColIdx: React.Dispatch<React.SetStateAction<number>>;
   dateRowIdx: number;
@@ -72,6 +71,8 @@ const SettingCard: React.FC<SettingCardProps> = ({
   sheet,
   excelFilename,
   setExcelFilename,
+  company,
+  setCompany,
   kpiColIdx,
   setKpiColIdx,
   dateRowIdx,
@@ -98,8 +99,11 @@ const SettingCard: React.FC<SettingCardProps> = ({
           {excelFilename.length > 0 && (
             <Grid container>
               <Grid container xs={12} className="mb-4 items-center w-full">
-                <span className="ml-auto">Excel：</span>
-                <code className="mr-auto">{excelFilename}</code>
+                <span className="mr-auto">Excel：</span>
+                <code className="ml-auto">{excelFilename}</code>
+              </Grid>
+              <Grid container xs={12} className="mb-4 items-center w-full">
+                <AutocompleteCompany company={company} setCompany={setCompany} />
               </Grid>
               <Grid container xs={12} className="mb-4 w-full">
                 <Grid item xs={12} sm={6} className="items-center flex">
@@ -122,29 +126,7 @@ const SettingCard: React.FC<SettingCardProps> = ({
             <InputGrid label="日付行" num={dateRowIdx} setNum={setDateRowIdx} disabled={sheet === null} />
           </Grid>
           <Grid item xs={12}>
-            <Autocomplete
-              multiple
-              disableCloseOnSelect
-              options={kpiOptions}
-              getOptionLabel={(option: KpiInfo) => option.label}
-              isOptionEqualToValue={(option: KpiInfo, value: KpiInfo) => option.row === value.row}
-              renderOption={({ className = "", ...props }, option: KpiInfo, { selected }) => (
-                <li {...props} className={`${className} text-sm`} key={option.row}>
-                  <Checkbox icon={<CheckBoxOutlineBlankIcon fontSize="small" />} checkedIcon={<CheckBoxIcon fontSize="small" />} checked={selected} className="mr-2 py-0" />
-                  {option.label}
-                </li>
-              )}
-              renderInput={(params) => <TextField {...params} label="KPIs" placeholder="[Alt] + [↓]" />}
-              className="w-full text-xl"
-              value={kpis}
-              size="small"
-              onChange={(evt: React.SyntheticEvent<Element, Event>, newValue: KpiInfo[]) => {
-                setKpis(newValue);
-                console.log(["newValue", newValue]);
-              }}
-              ChipProps={{ className: "bg-orange-200" }}
-              disabled={sheet === null}
-            />
+            <AutocompleteKpis sheet={sheet} kpis={kpis} setKpis={setKpis} kpiOptions={kpiOptions} />
           </Grid>
           <Grid item xs={12} className="mt-8">
             <Button
@@ -160,6 +142,8 @@ const SettingCard: React.FC<SettingCardProps> = ({
                     dateRowIdx: dateRowIdx,
                   });
                   data.excelFilename = excelFilename;
+                  data.sheetName = sheet.name;
+                  data.company = company;
                   downloadJson(data, filename);
                   showAlertSnack({ message: `KPI file '${filename}' was downloaded successfully`, severity: "success" });
                 } else {

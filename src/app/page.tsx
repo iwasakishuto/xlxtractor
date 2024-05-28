@@ -41,8 +41,11 @@ const Page: NextPage<PageProps> = () => {
   const [sheetIndex, setSheetIndex] = useState<number>(0);
   const [excelUploading, setExcelUploading] = useState<boolean>(false);
   const [excelFilename, setExcelFilename] = useState<string>("");
+  const [company, setCompany] = useState<string>("");
   const [maxRows, setMaxRows] = useState<number>(0);
   const [maxColumns, setMaxColumns] = useState<number>(0);
+  // const [rowSkipArea, setRowSkipArea] = useState<RowSkipArea[]>([]);
+
   // KPI states
   const [kpis, setKpis] = useState<KpiInfo[]>([]);
   const [kpiOptions, setKpiOptions] = useState<KpiInfo[]>([]);
@@ -59,6 +62,7 @@ const Page: NextPage<PageProps> = () => {
       setKpiOptions([]);
       setKpiColIdx(0);
       setDateRowIdx(0);
+      // setRowSkipArea([]);
       const ws: wjcXlsx.WorkSheet = workbook.sheets[sheetIndex];
       if (ws) {
         setMaxRows(ws.rows.filter((row) => isRowValid(row)).length);
@@ -200,6 +204,8 @@ const Page: NextPage<PageProps> = () => {
             kpiOptions={kpiOptions}
             excelFilename={excelFilename}
             setExcelFilename={setExcelFilename}
+            company={company}
+            setCompany={setCompany}
             dispColumns={dispColumns}
             setDispColumns={setDispColumns}
             dispRows={dispRows}
@@ -266,6 +272,8 @@ const Page: NextPage<PageProps> = () => {
                 className="max-h-full"
                 excelFilename={excelFilename}
                 setExcelFilename={setExcelFilename}
+                company={company}
+                setCompany={setCompany}
                 dispColumns={dispColumns}
                 setDispColumns={setDispColumns}
                 dispRows={dispRows}

@@ -2,7 +2,7 @@
  * @fileoverview Types for the application
  */
 
-export type { JsonData, KpiInfo } from "./data";
+export type { JsonData, KpiInfo, PortfolioCompany, RowSkipArea } from "./data";
 export type { ExcelData } from "./excel";
 export type {
   HTMLAnchorProps,

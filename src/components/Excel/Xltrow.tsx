@@ -82,7 +82,7 @@ const Xltrow: React.FC<XltrowProps> = ({
               : ""
           }`}
           colSpan={colSpan}
-          rowSpan={rowSpan}
+          // rowSpan={rowSpan}
         >
           {value}
         </td>
